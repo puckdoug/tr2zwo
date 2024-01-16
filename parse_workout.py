@@ -89,9 +89,13 @@ class Interval(msgspec.Struct):
         self.xml = f'<SteadyState Duration="{self.end - self.start}" Power="{self.power / 100}"></SteadyState>'
       case "Ramp":
         if self.ramp_direction == "up":
-          self.xml = f'<Ramp Duration="{self.end - self.start}" PowerLow="{self.power_min / 100}" PowerHigh="{float(round(self.power_max / 100))}"></Ramp>'
+          self.xml = f'<Ramp Duration="{self.end - self.start}"' + \
+                     f' PowerLow="{self.power_min / 100}"' + \
+                     f' PowerHigh="{float(round(self.power_max) / 100)}"></Ramp>'
         else:
-          self.xml = f'<Ramp Duration="{self.end - self.start}" PowerLow="{self.power_max / 100}" PowerHigh="{float(round(self.power_min / 100))}"></Ramp>'
+          self.xml = f'<Ramp Duration="{self.end - self.start}"' + \
+                     f' PowerLow="{self.power_max / 100}"' + \
+                     f' PowerHigh="{float(round(self.power_min) / 100)}"></Ramp>'
       case _:
         self.xml = f'<unknown></unknown>'
     
