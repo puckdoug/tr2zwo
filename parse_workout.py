@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
-import httpx
+
 import ujson
-import pprint
 from typing import List, Dict
 import msgspec
 from argparse import ArgumentParser
