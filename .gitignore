@@ -1,4 +1,3 @@
-tmp
-workouts
-plugin
-.ipynb_checkpoints
+__pycache__
+dist
+tr2zwo.egg-info/
