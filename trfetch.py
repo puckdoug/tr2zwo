@@ -4,7 +4,7 @@ import re
 import httpx
 import keyring
 import ujson
-from typing import List
+from typing import List, Dict
 from argparse import ArgumentParser
 import msgspec
 
@@ -12,7 +12,7 @@ import msgspec
 class TRFetch(msgspec.Struct):
   _client: httpx.Client = None
   verbose: bool = False
-  workouts: List[TRRawWorkout] = []
+  workouts: List[Dict] = []
 
 #-------------------------------------------------------------------------------
   def login(self):
