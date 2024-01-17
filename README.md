@@ -1,6 +1,6 @@
 # tr2zwo
 
-A python package to convert TrainerRoad workouts into Zwift ZWO format custom worout files. This allows TrainerRoad
+A python package to convert TrainerRoad workouts into Zwift ZWO format custom workout files. This allows TrainerRoad
 subscribers to easily follow their TrainerRoad plan in the Zwift world. 
 
 ## installation
