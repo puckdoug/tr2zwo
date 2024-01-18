@@ -96,7 +96,7 @@ class Interval(msgspec.Struct):
                      f' PowerLow="{self.power_max / 100}"' + \
                      f' PowerHigh="{float(round(self.power_min) / 100)}"></Ramp>'
       case _:
-        self.xml = f'<unknown></unknown>'
+        self.xml = '<unknown></unknown>'
     
 #------------------------------------------------------------------------------
 class Workout(msgspec.Struct):
@@ -148,19 +148,19 @@ class Workout(msgspec.Struct):
 #------------------------------------------------------------------------------
   def dump_xml(self):
   #print(f"{len(interval_list)} intervals and {len(workout_item_list)} workout_items")
-    print(f"<workout_file>")
+    print("<workout_file>")
     # header info goes here
     print(f"<name>{self.name}</name>")
     print(f"<author>{self.author}</author>")
     print(f"<category>{self.category}</category>")
     print(f"<sportType>{self.sport}</sportType>")
     print(f"<description><![CDATA[{self.description}]]></description>")
-    print(f"<workout>")
+    print("<workout>")
     for i in self.intervals:
       i.find_type()
       i.to_xml()
       print(i.xml)
-    print(f"</workout></workout_file>")
+    print("</workout></workout_file>")
 
 #------------------------------------------------------------------------------
 def main():
