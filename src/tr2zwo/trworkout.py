@@ -21,7 +21,7 @@ class WorkoutItem(msgspec.Struct):
       instance.ftp = instance.raw['ftpPercent']
       instance.member_ftp = instance.raw['memberFtpPercent']
     return instance
-  
+
 #------------------------------------------------------------------------------
 class Interval(msgspec.Struct):
   raw: Dict = None
@@ -56,7 +56,8 @@ class Interval(msgspec.Struct):
 
 #------------------------------------------------------------------------------
   def include(self, workout_item):
-    if self.start <= workout_item.seconds / 1000 and self.end > workout_item.seconds / 1000:
+    if self.start <= workout_item.seconds / 1000 and \
+       self.end > workout_item.seconds / 1000:
       self.wd.append(workout_item)
 
 #------------------------------------------------------------------------------
@@ -64,14 +65,14 @@ class Interval(msgspec.Struct):
     for w in self.wd:
       if self.power_max < w.ftp:
         self.power_max = w.ftp
-        self.power_max_when = w.seconds / 1000
+        self.power_max_when = int(w.seconds / 1000)
       if self.power_min > w.ftp or self.power_min < 0:
         self.power_min = w.ftp
-        self.power_min_when = w.seconds / 1000
+        self.power_min_when = int(w.seconds / 1000)
     if self.power_min_when < self.power_max_when:
       self.ramp_direction = "up"
     else:
-       self.ramp_direction = "down"
+      self.ramp_direction = "down"
 
 #------------------------------------------------------------------------------
   def find_type(self):
@@ -85,19 +86,22 @@ class Interval(msgspec.Struct):
   def to_xml(self):
     match self.interval_type:
       case "SteadyState":
-        self.xml = f'<SteadyState Duration="{self.end - self.start}" Power="{self.power / 100}"></SteadyState>'
+        self.xml = f'<SteadyState Duration="{self.end - self.start}"' + \
+                   f' Power="{self.power / 100}"></SteadyState>'
       case "Ramp":
         if self.ramp_direction == "up":
           self.xml = f'<Ramp Duration="{self.end - self.start}"' + \
                      f' PowerLow="{self.power_min / 100}"' + \
-                     f' PowerHigh="{float(round(self.power_max) / 100)}"></Ramp>'
+                     f' PowerHigh="{float(round(self.power_max) / 100)}">' + \
+                      '</Ramp>'
         else:
           self.xml = f'<Ramp Duration="{self.end - self.start}"' + \
                      f' PowerLow="{self.power_max / 100}"' + \
-                     f' PowerHigh="{float(round(self.power_min) / 100)}"></Ramp>'
+                     f' PowerHigh="{float(round(self.power_min) / 100)}">' + \
+                      '</Ramp>'
       case _:
         self.xml = '<unknown></unknown>'
-    
+
 #------------------------------------------------------------------------------
 class Workout(msgspec.Struct):
   raw: Dict = None
@@ -116,7 +120,8 @@ class Workout(msgspec.Struct):
     if 'raw' in kwargs:
       instance.raw = kwargs['raw']
       instance.name = instance.raw['Workout']['Details']['WorkoutName']
-      instance.description = instance.raw['Workout']['Details']['WorkoutDescription']
+      instance.description = \
+        instance.raw['Workout']['Details']['WorkoutDescription']
       instance.find_intervals()
       instance.find_workout_items()
       instance.assign_workout_items_to_intervals()
@@ -130,7 +135,7 @@ class Workout(msgspec.Struct):
       if i.name != "Workout":
         il.append(i)
     self.intervals = il
-    
+
 #------------------------------------------------------------------------------
   def find_workout_items(self):
     wl = []
@@ -147,7 +152,6 @@ class Workout(msgspec.Struct):
 
 #------------------------------------------------------------------------------
   def dump_xml(self):
-  #print(f"{len(interval_list)} intervals and {len(workout_item_list)} workout_items")
     print("<workout_file>")
     # header info goes here
     print(f"<name>{self.name}</name>")
@@ -165,8 +169,10 @@ class Workout(msgspec.Struct):
 #------------------------------------------------------------------------------
 def main():
 
-  p = ArgumentParser(description="Convert a TrainerRoad workout to a Zwift .zwo file")
-  p.add_argument('--verbose', '-v', action='store_const', const=True, help="provide feedback while running")
+  p = ArgumentParser(
+    description="Convert a TrainerRoad workout to a Zwift .zwo file")
+  p.add_argument('--verbose', '-v', action='store_const',
+    const=True, help="provide feedback while running")
   p.add_argument('file', help="file to load")
   args = p.parse_args()
 
@@ -180,5 +186,5 @@ def main():
   w.dump_xml()
 
 #===============================================================================
-if __name__=='__main__':
+if __name__ == '__main__':
   main()

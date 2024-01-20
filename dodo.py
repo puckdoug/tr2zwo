@@ -41,6 +41,12 @@ def task_fix():
     'actions': ['fixit fix src']
   }
 
+def task_flake8():
+  """run flake8 on src and test"""
+  return {
+    'actions': ['flake8 src test']
+  }
+
 def task_build():
   """build package"""
   return {

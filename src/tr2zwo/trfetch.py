@@ -10,6 +10,7 @@ import msgspec
 #===============================================================================
 class TRFetch(msgspec.Struct):
   _client: httpx.Client = None
+  _login: httpx.Response = None
   verbose: bool = False
   workouts: List[Dict] = []
 
@@ -22,7 +23,7 @@ class TRFetch(msgspec.Struct):
     username = keyring.get_password('trainerroad', 'username')
     password = keyring.get_password('trainerroad', 'password')
     data = { "Username": username, "Password": password }
-    login = self._client.post(url, data=data )
+    self._login = self._client.post(url, data=data )
 
 #-------------------------------------------------------------------------------
   def fixup_endpoint(self, endpoint):
@@ -46,12 +47,16 @@ class TRFetch(msgspec.Struct):
 #------------------------------------------------------------------------------
 def main():
 
-  p = ArgumentParser(description="Convert a TrainerRoad workout to a Zwift .zwo file")
-  p.add_argument('--verbose', '-v', action='store_const', const=True, help="provide feedback while running")
-  p.add_argument('--setup', '-s', action='store_const', const=True, help="initial setup, can be run again to update settings")
+  p = ArgumentParser(
+    description="Convert a TrainerRoad workout to a Zwift .zwo file")
+  p.add_argument('--verbose', '-v', action='store_const',
+    const=True, help="provide feedback while running")
+  p.add_argument('--setup', '-s', action='store_const',
+    const=True, help="initial setup, can be run again to update settings")
   p.add_argument('--username', '-u', help="Your TrainerRoad username")
   p.add_argument('--password', '-p', help="Your TrainerRoad password")
-  p.add_argument('url', nargs='+', help="The URL(s) of the trainerroad workout(s) to fetch")
+  p.add_argument('url', nargs='+',
+    help="The URL(s) of the trainerroad workout(s) to fetch")
   args = p.parse_args()
 
   f = TRFetch()
@@ -72,5 +77,5 @@ def main():
       print(f"Added workout '{w['Workout']['Details']['WorkoutName']}'")
 
 #===============================================================================
-if __name__=='__main__':
+if __name__ == '__main__':
   main()
