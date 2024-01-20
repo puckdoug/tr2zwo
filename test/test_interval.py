@@ -1,6 +1,6 @@
 import pytest
 
-from trworkout import Interval
+from tr2zwo.trworkout import Interval
 
 def test_create_empty_empty_interval():
   i = Interval()

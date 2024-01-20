@@ -1,6 +1,6 @@
 import pytest
 
-from trworkout import Workout
+from tr2zwo.trworkout import Workout
 
 def test_create_empty_workout():
   w = Workout
