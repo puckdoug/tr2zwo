@@ -3,7 +3,6 @@
 import re
 import httpx
 import keyring
-import ujson
 from typing import List, Dict
 from argparse import ArgumentParser
 import msgspec
@@ -38,10 +37,9 @@ class TRFetch(msgspec.Struct):
     detail = self.fixup_endpoint(endpoint)
     if self.verbose:
       print(f"fetching {detail}")
-
     workout = self._client.get(detail)
 
-    trr = ujson.loads(workout.text)
+    trr = workout.json()
 
     return trr
 
@@ -58,15 +56,20 @@ def main():
 
   f = TRFetch()
 
+  if args.setup:
+    print("Not implemented yet")
+    exit(0)
+
   if args.verbose:
     f.verbose = True
-
 
   workouts = []
 
   for u in args.url:
     w = f.fetch_workout(u)
     workouts.append(w)
+    if args.verbose:
+      print(f"Added workout '{w['Workout']['Details']['WorkoutName']}'")
 
 #===============================================================================
 if __name__=='__main__':
