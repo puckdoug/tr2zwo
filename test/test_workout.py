@@ -1,4 +1,4 @@
-from tr1zwo import Workout
+from tr2zwo import Workout
 
 def test_create_empty_workout():
   w = Workout
