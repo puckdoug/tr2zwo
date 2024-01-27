@@ -11,6 +11,7 @@ import msgspec
 class TRFetch(msgspec.Struct):
   _client: httpx.Client = None
   _login: httpx.Response = None
+  raw: str = ""
   verbose: bool = False
   workouts: List[Dict] = []
 
@@ -38,8 +39,10 @@ class TRFetch(msgspec.Struct):
     detail = self.fixup_endpoint(endpoint)
     if self.verbose:
       print(f"fetching {detail}")
+
     workout = self._client.get(detail)
 
+    self.raw = workout.text
     trr = workout.json()
 
     return trr
@@ -51,6 +54,8 @@ def main():
     description="Convert a TrainerRoad workout to a Zwift .zwo file")
   p.add_argument('--verbose', '-v', action='store_const',
     const=True, help="provide feedback while running")
+  p.add_argument('--raw', '-r', action='store_const',
+    const=True, help="output raw retult of the query")
   p.add_argument('--setup', '-s', action='store_const',
     const=True, help="initial setup, can be run again to update settings")
   p.add_argument('--username', '-u', help="Your TrainerRoad username")
@@ -75,6 +80,8 @@ def main():
     workouts.append(w)
     if args.verbose:
       print(f"Added workout '{w['Workout']['Details']['WorkoutName']}'")
+    if args.raw:
+      print(f.raw)
 
 #===============================================================================
 if __name__ == '__main__':
