@@ -1,0 +1,5 @@
+graft src
+recursive-exclude __pycache__ *.py[cod]
+include_package_data = True
+global-include *.pyi
+global-include *.typed
