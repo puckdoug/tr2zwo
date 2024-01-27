@@ -24,7 +24,9 @@ positional arguments:
 options:
   -h, --help     show this help message and exit
   --verbose, -v  provide feedback while running
+```
 
+```shell
  $ tr2zwift setup -h
  usage: tr2zwift setup [-h] [--username USERNAME] [--password PASSWORD] [--directory DIRECTORY]
 
@@ -36,7 +38,9 @@ options:
                          Your TrainerRoad password
    --directory DIRECTORY, -d DIRECTORY
                          Output directory for .zwo file s
+```
 
+```shell
 $ tr2zwift fetch -h
 usage: tr2zwift fetch [-h] [--print] url [url ...]
 
