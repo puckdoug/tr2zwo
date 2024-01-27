@@ -17,13 +17,13 @@ def main():
   setup.add_argument('--username', '-u', help="Your TrainerRoad username")
   setup.add_argument('--password', '-p', help="Your TrainerRoad password")
   setup.add_argument('--directory', '-d', help="Output directory for .zwo file  s")
-  fetch = sub.add_parser('fetch', help="fetch a workout")
+  fetch = sub.add_parser('fetch', help="fetch one or more workouts")
   fetch.add_argument('--print', '-p', action='store_const', const=True,
     help="Print the zwo to stdout, does not write file")
   fetch.add_argument('url', nargs='+',
     help="The URL(s) of the trainerroad workout(s) to fetch")
-  # fetch.add_argument('--raw', '-r', action='store_const',
-  #   const=True, help="output raw retult of the query")
+  fetch.add_argument('--raw', '-r', action='store_const',
+     const=True, help="output raw retult of the query")
   args = p.parse_args()
 
   if args.verbose:
@@ -50,9 +50,11 @@ def main():
       f = TRFetch()
       for u in args.url:
         data = f.fetch_workout(u)
-        w = Workout.create(raw=data)
+        w = Workout.create(raw=data, url=u)
       if args.print:
         w.print()
+      elif args.raw:
+        w.print_raw()
       else:
         w.write(directory=c.directory)
     case _:

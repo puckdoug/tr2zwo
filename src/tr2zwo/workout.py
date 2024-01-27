@@ -8,28 +8,47 @@ from tr2zwo.interval import Interval
 
 #------------------------------------------------------------------------------
 class Workout(msgspec.Struct):
-  raw: Dict = None
   verbose: bool = False
+  raw: Dict = None
+  zwo: str = ''
   author: str = 'TrainerRoad'
   name: str = None
   description: str = None
+  goaldescription: str = None
   category: str = 'TrainerRoad'
-  #subcategory: str = ''
+  subcategory: str = ''
   sport: str = 'bike'
+  url: str = ''
   intervals: List[Interval] = []
   workout_items: List[WorkoutItem] = []
-  zwo: str = ''
 
 #------------------------------------------------------------------------------
   @classmethod
   def create(cls, **kwargs):
     instance = Workout()
+    if 'url' in kwargs:
+      instance.url = kwargs['url']
     if 'raw' in kwargs:
       instance.raw = kwargs['raw']
-      instance.name = instance.raw['Workout']['Details']['WorkoutName']
-      instance.description = \
-        instance.raw['Workout']['Details']['WorkoutDescription']
-  #    instance.subcategory = instance.raw['Workout']['Details']['Zones']['Description']
+      try:
+        instance.name = instance.raw['Workout']['Details']['WorkoutName']
+      except:
+        pass
+      try:
+        instance.description = \
+          instance.raw['Workout']['Details']['WorkoutDescription']
+      except:
+        pass
+      try:
+        instance.goaldescription = \
+          instance.raw['Workout']['Details']['GoalDescription']
+      except:
+        pass
+      try:
+        instance.subcategory = \
+          instance.raw['Workout']['Details']['Progression']['Text']
+      except:
+        pass
       instance.find_workout_items()
       instance.find_intervals()
       instance.build_zwo()
@@ -37,25 +56,21 @@ class Workout(msgspec.Struct):
 
 #------------------------------------------------------------------------------
   def find_workout_items(self):
-    wi = []
+    workout_item_list = []
     for row in self.raw['Workout']['workoutData']:
       w = WorkoutItem.create(raw=row)
-      wi.append(w)
-    self.workout_items = wi
+      workout_item_list.append(w)
+    self.workout_items = workout_item_list
 
 #------------------------------------------------------------------------------
   def find_intervals(self):
-    il = []
+    interval_list = []
     for row in self.raw['Workout']['intervalData']:
       i = Interval.create(raw=row)
       if i.name != "Workout":
         i.assign_workout_items(self.workout_items)
-        #for w in self.workout_items:
-          #i.include(w)
-        #i.find_type()
-        #i.to_xml()
-        il.append(i)
-    self.intervals = il
+        interval_list.append(i)
+    self.intervals = interval_list
 
 #------------------------------------------------------------------------------
   def add(self, row):
@@ -69,14 +84,27 @@ class Workout(msgspec.Struct):
     self.add(f"<activitySaveName>TrainerRoad: {self.name}</activitySaveName>")
     self.add(f"<author>{self.author}</author>")
     self.add(f"<category>{self.category}</category>")
-    #if self.subcategory:
-      #f.write(f"<subcategory>{self.subcategory}</subcategory>")
+    if self.subcategory:
+      self.add(f"<subcategory>{self.subcategory}</subcategory>")
     self.add(f"<sportType>{self.sport}</sportType>")
-    self.add(f"<description><![CDATA[{self.description}]]></description>")
+
+    desc = f"""<description><![CDATA[
+    {self.description}
+
+    {self.goaldescription}
+
+    URL: {self.url}
+    ]]></description>"""
+
+    self.add(desc)
+
+    # workout data
     self.add("<workout>")
     for i in self.intervals:
       self.add(i.xml)
     self.add("</workout>")
+
+    # close
     self.add("</workout_file>")
 
 #------------------------------------------------------------------------------
@@ -88,13 +116,16 @@ class Workout(msgspec.Struct):
       f.write(self.zwo)
 
 #------------------------------------------------------------------------------
+  def print_raw(self):
+    print(ujson.dumps(self.raw, indent=2))
+
+#------------------------------------------------------------------------------
   def print(self):
     print(self.zwo)
 
 #------------------------------------------------------------------------------
 def main():
   pass
-
 
 #===============================================================================
 if __name__ == '__main__':
