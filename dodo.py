@@ -59,3 +59,10 @@ def task_cleanup():
   return {
     'actions': [ 'rm -rf dist src/tr2zwo.egg-info' ]
   }
+
+def task_watch():
+  """run pytest on continuous loop whenever a file is updated"""
+  return {
+    'actions': ["""watchmedo shell-command --patterns="*.py" --recursive --command='PYTHONPATH=`pwd`/src pytest --color=yes' ."""],
+    'verbosity': 2
+  }

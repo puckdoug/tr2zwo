@@ -3,3 +3,4 @@ dist
 tr2zwo.egg-info/
 .coverage
 .doit.db.db
+.zed
