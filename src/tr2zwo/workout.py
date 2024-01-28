@@ -2,23 +2,23 @@
 
 import ujson
 import msgspec
-from typing import List, Dict
+from typing import List, Dict, Optional
 from tr2zwo.workoutitem import WorkoutItem
 from tr2zwo.interval import Interval
 
 #------------------------------------------------------------------------------
 class Workout(msgspec.Struct):
   verbose: bool = False
-  raw: Dict = None
+  raw: Optional[Dict] = None
   zwo: str = ''
   author: str = 'TrainerRoad'
-  name: str = None
-  description: str = None
-  goaldescription: str = None
+  name: Optional[str] = None
+  description: Optional[str] = None
+  goaldescription: Optional[str] = None
   category: str = 'TrainerRoad'
-  subcategory: str = ''
+  subcategory: Optional[str] = None
   sport: str = 'bike'
-  url: str = ''
+  url: Optional[str] = None
   intervals: List[Interval] = []
   workout_items: List[WorkoutItem] = []
 
@@ -26,28 +26,30 @@ class Workout(msgspec.Struct):
   @classmethod
   def create(cls, **kwargs):
     instance = Workout()
+    if 'verbose' in kwargs:
+      instance.verbose = kwargs['verbose']
     if 'url' in kwargs:
       instance.url = kwargs['url']
     if 'raw' in kwargs:
       instance.raw = kwargs['raw']
       try:
         instance.name = instance.raw['Workout']['Details']['WorkoutName']
-      except:
+      except Exception:
         pass
       try:
         instance.description = \
           instance.raw['Workout']['Details']['WorkoutDescription']
-      except:
+      except Exception:
         pass
       try:
         instance.goaldescription = \
           instance.raw['Workout']['Details']['GoalDescription']
-      except:
+      except Exception:
         pass
       try:
         instance.subcategory = \
           instance.raw['Workout']['Details']['Progression']['Text']
-      except:
+      except Exception:
         pass
       instance.find_workout_items()
       instance.find_intervals()
@@ -58,7 +60,7 @@ class Workout(msgspec.Struct):
   def find_workout_items(self):
     workout_item_list = []
     for row in self.raw['Workout']['workoutData']:
-      w = WorkoutItem.create(raw=row)
+      w = WorkoutItem.create(raw=row, verbose=self.verbose)
       workout_item_list.append(w)
     self.workout_items = workout_item_list
 
@@ -66,7 +68,7 @@ class Workout(msgspec.Struct):
   def find_intervals(self):
     interval_list = []
     for row in self.raw['Workout']['intervalData']:
-      i = Interval.create(raw=row)
+      i = Interval.create(raw=row, verbose=self.verbose)
       if i.name != "Workout":
         i.assign_workout_items(self.workout_items)
         interval_list.append(i)
@@ -111,7 +113,7 @@ class Workout(msgspec.Struct):
   def write(self, directory='.'):
     filename = f"{directory}/{self.name}.zwo"
     if self.verbose:
-      print(f"filename: {filename}")
+      print(f"Storing workout in {filename}")
     with open(filename, 'w') as f:
       f.write(self.zwo)
 

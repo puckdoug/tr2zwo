@@ -5,6 +5,7 @@ import msgspec
 
 #------------------------------------------------------------------------------
 class WorkoutItem(msgspec.Struct):
+  verbose: bool = False
   raw: Dict = {}
   seconds: int = 0
   ftp: float = 0.0

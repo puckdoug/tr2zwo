@@ -5,6 +5,8 @@ import keyring
 from getpass import getpass
 
 class TRConfig():
+  verbose: bool = False
+
   def __init__(self):
     self.load()
 

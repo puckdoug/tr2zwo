@@ -3,14 +3,14 @@
 import re
 import httpx
 import keyring
-from typing import List, Dict
+from typing import List, Dict, Optional
 from argparse import ArgumentParser
 import msgspec
 
 #===============================================================================
 class TRFetch(msgspec.Struct):
-  _client: httpx.Client = None
-  _login: httpx.Response = None
+  _client: Optional[httpx.Client] = None
+  _login: Optional[httpx.Response] = None
   raw: str = ""
   verbose: bool = False
   workouts: List[Dict] = []

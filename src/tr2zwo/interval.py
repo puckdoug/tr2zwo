@@ -6,6 +6,7 @@ from tr2zwo.workoutitem import WorkoutItem
 
 #------------------------------------------------------------------------------
 class Interval(msgspec.Struct):
+  verbose: bool = False
   raw: Dict = {}
   start: int = 0
   end: int = 0

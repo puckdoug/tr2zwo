@@ -2,8 +2,8 @@
 """Command-line wrapper"""
 import sys
 from argparse import ArgumentParser
-from getpass import getpass
 from tr2zwo import TRFetch, Workout, TRConfig
+from typing import Optional
 
 #==============================================================================
 def main():
@@ -12,45 +12,49 @@ def main():
     description="Convert a TrainerRoad workout to a Zwift .zwo file")
   p.add_argument('--verbose', '-v', action='store_const',
     const=True, help="provide feedback while running")
-  sub =  p.add_subparsers(dest='cmd')
-  setup = sub.add_parser('setup', help="initial setup, can be run again to update settings")
+  sub = p.add_subparsers(dest='cmd')
+  setup = sub.add_parser('setup',
+    help="initial setup, can be run again to update settings")
   setup.add_argument('--username', '-u', help="Your TrainerRoad username")
   setup.add_argument('--password', '-p', help="Your TrainerRoad password")
-  setup.add_argument('--directory', '-d', help="Output directory for .zwo file  s")
+  setup.add_argument('--directory', '-d',
+    help="Output directory for .zwo file  s")
   fetch = sub.add_parser('fetch', help="fetch one or more workouts")
   fetch.add_argument('--print', '-p', action='store_const', const=True,
     help="Print the zwo to stdout, does not write file")
   fetch.add_argument('url', nargs='+',
     help="The URL(s) of the trainerroad workout(s) to fetch")
   fetch.add_argument('--raw', '-r', action='store_const',
-     const=True, help="output raw retult of the query")
+    const=True, help="output raw retult of the query")
   args = p.parse_args()
 
-  if args.verbose:
-    f.verbose = True
-
   c = TRConfig()
+  if args.verbose:
+    c.verbose = True
 
   match args.cmd:
     case 'setup':
+      user: Optional[str]
+      pasw: Optional[str]
+      dire: Optional[str]
       try:
-        u = args.username
+        user = args.username
       except AttributeError:
-        u = None
+        user = None
       try:
-        p = args.password
+        pasw = args.password
       except AttributeError:
-        p = None
+        pasw = None
       try:
-        d = args.directory
+        dire = args.directory
       except AttributeError:
-        d = None
-      c.setup( username=u, password=p, directory=d )
+        dire = None
+      c.setup( username=user, password=pasw, directory=dire )
     case 'fetch':
-      f = TRFetch()
+      f = TRFetch(verbose=c.verbose)
       for u in args.url:
         data = f.fetch_workout(u)
-        w = Workout.create(raw=data, url=u)
+        w = Workout.create(raw=data, url=u, verbose=c.verbose)
       if args.print:
         w.print()
       elif args.raw:
