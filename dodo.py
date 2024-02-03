@@ -57,7 +57,7 @@ def task_build():
 def task_cleanup():
   """clean up build artifacts"""
   return {
-    'actions': [ 'rm -rf dist src/tr2zwo.egg-info' ]
+    'actions': [ 'rm -rf build tr2zwift.spec dist src/tr2zwo.egg-info' ]
   }
 
 def task_watch():
