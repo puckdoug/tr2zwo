@@ -5,6 +5,7 @@ import httpx
 import keyring
 from typing import List, Dict, Optional
 from argparse import ArgumentParser
+import sys
 import msgspec
 
 #===============================================================================
@@ -16,11 +17,11 @@ class TRFetch(msgspec.Struct):
   workouts: List[Dict] = []
 
 #-------------------------------------------------------------------------------
-  def login(self):
+  def login(self, fh=sys.stdout):
     url = "https://www.trainerroad.com/app/login"
     self._client = httpx.Client(follow_redirects=True)
     if self.verbose:
-      print("Logging in to TrainerRoad")
+      print("Logging in to TrainerRoad", file=fh)
     username = keyring.get_password('trainerroad', 'username')
     password = keyring.get_password('trainerroad', 'password')
     data = { "Username": username, "Password": password }
@@ -32,13 +33,13 @@ class TRFetch(msgspec.Struct):
     return f"https://www.trainerroad.com/app/api/workoutdetails/{id}"
 
 #-------------------------------------------------------------------------------
-  def fetch_workout(self, endpoint):
+  def fetch_workout(self, endpoint, fh=sys.stdout):
     if self._client is None:
-      self.login()
+      self.login(fh=fh)
 
     detail = self.fixup_endpoint(endpoint)
     if self.verbose:
-      print(f"fetching {detail}")
+      print(f"fetching {detail}", file=fh)
 
     workout = self._client.get(detail)
 

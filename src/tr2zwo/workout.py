@@ -2,9 +2,11 @@
 
 import ujson
 import msgspec
+import sys
 from typing import List, Dict, Optional
 from tr2zwo.workoutitem import WorkoutItem
 from tr2zwo.interval import Interval
+from html.parser import HTMLParser
 
 #------------------------------------------------------------------------------
 class Workout(msgspec.Struct):
@@ -79,6 +81,10 @@ class Workout(msgspec.Struct):
     self.zwo = self.zwo + row + '\n'
 
 #------------------------------------------------------------------------------
+  def remove_html(self, text):
+    parser = HTMLParser()
+    return parser.unescape(text)
+#------------------------------------------------------------------------------
   def build_zwo(self):
     self.add("<workout_file>")
     # header info goes here
@@ -110,10 +116,10 @@ class Workout(msgspec.Struct):
     self.add("</workout_file>")
 
 #------------------------------------------------------------------------------
-  def write(self, directory='.'):
+  def write(self, directory='.', fh=sys.stdout):
     filename = f"{directory}/{self.name}.zwo"
     if self.verbose:
-      print(f"Storing workout in {filename}")
+      print(f"Storing workout in {filename}", file=fh)
     with open(filename, 'w') as f:
       f.write(self.zwo)
 

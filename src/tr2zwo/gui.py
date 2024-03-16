@@ -50,6 +50,7 @@ class Gui(wx.Frame):
     browser_sizer.AddGrowableRow( 0 )
 
     self.browser = wx.html2.WebView.New(parent=self)
+    self.browser.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self.do_new_page)
     browser_sizer.Add( self.browser, 1, wx.EXPAND, 5 )
     box.Add( browser_sizer, 1, wx.EXPAND, 5 )
 
@@ -59,10 +60,6 @@ class Gui(wx.Frame):
   def load_trainerroad(self):
     self.browser.LoadURL("https://www.trainerroad.com/")
 
-#----------------------------------------------------------------------
-  def handle_new_windwow(self):
-      #EVT_WEBVIEW_NEWWINDOW   wxEVT_WEBVIEW_NEWWINDOW
-    pass
 #----------------------------------------------------------------------
   def init_menu(self):
     menu_bar = wx.MenuBar()
@@ -80,21 +77,26 @@ class Gui(wx.Frame):
     f = TRFetch(verbose=True)
     c = TRConfig()
     c.verbose = True
-    data = f.fetch_workout(url)
+    data = f.fetch_workout(url, fh=self.status_text)
+    self.status_text.SetValue("") # clear the status text
     w = Workout.create(raw=data, url=url, verbose=True)
-    w.write(directory=c.directory)
+    w.write(directory=c.directory, fh=self.status_text)
 
 #----------------------------------------------------------------------
   def do_back(self, event):
-    print("Back clicked")
+    self.browser.GoBack()
 
 #----------------------------------------------------------------------
   def do_fwd(self, event):
-    print("Forward clicked")
+    self.browser.GoForward()
 
 #----------------------------------------------------------------------
-  def do_cfg(self, event):
+  def do_config(self, event):
     print("Config clicked")
+
+#----------------------------------------------------------------------
+  def do_new_page(self, event):
+    self.browser.LoadURL(event.GetURL())
 
 #----------------------------------------------------------------------
   def on_quit(self, e):
