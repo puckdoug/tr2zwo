@@ -3,7 +3,8 @@
 from typing import Dict
 import msgspec
 
-#------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class WorkoutItem(msgspec.Struct):
   verbose: bool = False
   raw: Dict = {}
