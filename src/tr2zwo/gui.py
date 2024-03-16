@@ -7,42 +7,62 @@ from tr2zwo import TRFetch, Workout, TRConfig
 class Gui(wx.Frame):
   browser = wx.html2.WebView
 
-  def __init__(self, parent, title):
-    super(Gui, self).__init__(parent, title=title, size=(1000, 1200))
-    self.Center()
+#----------------------------------------------------------------------
+  def __init__( self, parent, title ):
+    super(Gui, self).__init__(parent, title=title, size=wx.Size( 1000,1200 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+    self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
     self.init_menu()
-    self.draw_panel()
+    self.draw_frame_contents()
+    self.Layout()
+    self.Centre( wx.BOTH )
     self.load_trainerroad()
+
+#----------------------------------------------------------------------
+  def draw_frame_contents(self):
+    # top row for navigation and status
+    box = wx.BoxSizer( wx.VERTICAL )
+    nav_sizer = wx.FlexGridSizer( 1, 5, 50, 5 )
+    nav_sizer.AddGrowableCol( 3 )
+    nav_sizer.SetFlexibleDirection( wx.HORIZONTAL )
+    nav_sizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_NONE )
+    self.bck_button = wx.Button( self, wx.ID_ANY, u"Back", wx.DefaultPosition, wx.DefaultSize, 0 )
+    self.bck_button.Bind(wx.EVT_BUTTON, self.do_back)
+    self.fwd_button = wx.Button( self, wx.ID_ANY, u"Fwd", wx.DefaultPosition, wx.DefaultSize, 0 )
+    self.fwd_button.Bind(wx.EVT_BUTTON, self.do_fwd)
+    self.fetch_button = wx.Button( self, wx.ID_ANY, u"Fetch", wx.DefaultPosition, wx.DefaultSize, 0 )
+    self.fetch_button.Bind(wx.EVT_BUTTON, self.do_fetch)
+    self.status_text = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+    self.cfg_button = wx.Button( self, wx.ID_ANY, u"Config", wx.DefaultPosition, wx.DefaultSize, 0 )
+    self.cfg_button.Bind(wx.EVT_BUTTON, self.do_config)
+    self.status_text.Enable( False )
+    nav_sizer.Add( window=self.bck_button, proportion=0, flag=wx.LEFT )
+    nav_sizer.Add( window=self.fwd_button, proportion=0, flag=wx.LEFT )
+    nav_sizer.Add( window=self.fetch_button, proportion=0, flag=wx.LEFT )
+    nav_sizer.Add( window=self.status_text, proportion=1, flag=wx.EXPAND )
+    nav_sizer.Add( window=self.cfg_button, proportion=0, flag=wx.LEFT )
+    box.Add( nav_sizer, 0, wx.EXPAND, 5 )
+
+    # just the browser below
+    browser_sizer = wx.FlexGridSizer( 1, 1, 0, 0 )
+    browser_sizer.SetFlexibleDirection( wx.BOTH )
+    browser_sizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+    browser_sizer.AddGrowableCol( 0 )
+    browser_sizer.AddGrowableRow( 0 )
+
+    self.browser = wx.html2.WebView.New(parent=self)
+    browser_sizer.Add( self.browser, 1, wx.EXPAND, 5 )
+    box.Add( browser_sizer, 1, wx.EXPAND, 5 )
+
+    self.SetSizer( box )
 
 #----------------------------------------------------------------------
   def load_trainerroad(self):
     self.browser.LoadURL("https://www.trainerroad.com/")
 
 #----------------------------------------------------------------------
-  def draw_panel(self):
-    panel = wx.Panel(self)
-    box = wx.BoxSizer(wx.HORIZONTAL)
-    fgs = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-
-    #fgs.AddGrowableRow(0,1) # Make row 1 growable
-    url_label = wx.StaticText(parent=panel, label="URL:")
-    url = wx.TextCtrl(parent=panel, size=(900, -1), style=wx.TE_DONTWRAP)
-    url.SetFocus()
-    fetch_button = wx.Button(parent=panel, label="Fetch", )
-    fetch_button.Bind(wx.EVT_BUTTON, self.on_click)
-    fgs.Add(window=url_label, proportion=0, flag=wx.ALIGN_LEFT)
-    fgs.Add(window=url, proportion=1, flag=wx.ALIGN_RIGHT|wx.EXPAND)
-    fgs.Add(window=fetch_button, proportion=0, flag=wx.ALIGN_RIGHT)
-
-    #fgs.AddGrowableRow(1,1)
-
-    fgs.AddGrowableRow(1,1) # Make row 2 growable
-    self.browser = wx.html2.WebView.New(parent=panel)
-    fgs.Add(window=self.browser, proportion=1, flag=wx.EXPAND)
-
-    box.Add(fgs, proportion=1, flag=wx.ALL|wx.EXPAND, border=15)
-    panel.SetSizer(box)
-
+  def handle_new_windwow(self):
+      #EVT_WEBVIEW_NEWWINDOW   wxEVT_WEBVIEW_NEWWINDOW
+    pass
 #----------------------------------------------------------------------
   def init_menu(self):
     menu_bar = wx.MenuBar()
@@ -54,7 +74,7 @@ class Gui(wx.Frame):
     self.SetMenuBar(menu_bar)
 
 #----------------------------------------------------------------------
-  def on_click(self, event):
+  def do_fetch(self, event):
     url = self.browser.GetCurrentURL()
 
     f = TRFetch(verbose=True)
@@ -63,6 +83,18 @@ class Gui(wx.Frame):
     data = f.fetch_workout(url)
     w = Workout.create(raw=data, url=url, verbose=True)
     w.write(directory=c.directory)
+
+#----------------------------------------------------------------------
+  def do_back(self, event):
+    print("Back clicked")
+
+#----------------------------------------------------------------------
+  def do_fwd(self, event):
+    print("Forward clicked")
+
+#----------------------------------------------------------------------
+  def do_cfg(self, event):
+    print("Config clicked")
 
 #----------------------------------------------------------------------
   def on_quit(self, e):
