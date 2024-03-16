@@ -53,6 +53,10 @@ options:
 
   ```
 
+## Example
+
+[![GUI usage](docs/mq2.jpg)](https://youtu.be/ve2a-b_3yZ4)
+
 ## References
 
 [ZWO Tag Reference]( https://github.com/h4l/zwift-workout-file-reference/blob/master/zwift_workout_file_tag_reference.md)
