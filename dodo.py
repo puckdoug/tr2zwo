@@ -54,6 +54,12 @@ def task_build():
     'verbosity': 2
   }
 
+def task_format():
+  """run ruff format"""
+  return {
+    'actions': [ 'ruff format src' ],
+  }
+
 def task_cleanup():
   """clean up build artifacts"""
   return {
