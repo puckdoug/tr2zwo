@@ -20,7 +20,7 @@ class TRConfig():
     self.password = keyring.get_password('tr2zwift', 'password')
     self.directory = keyring.get_password('tr2zwift', 'directory')
 
-  def setup(self, username=None, password=None, directory=None):
+  def setup(self, username="", password="", directory=""):
     if username:
       self.username = username
     else:
