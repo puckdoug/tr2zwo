@@ -1,0 +1,8 @@
+doit
+httpx
+keyring
+msgspec
+pytest
+setuptools
+ujson
+wxPython
