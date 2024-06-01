@@ -1,4 +1,3 @@
-#!/usr/local/bin/python3
 """Command-line wrapper"""
 import sys
 from argparse import ArgumentParser

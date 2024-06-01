@@ -1,5 +1,3 @@
-#!/usr/local/bin/python3
-
 import ujson
 import msgspec
 import sys
@@ -65,7 +63,7 @@ class Workout(msgspec.Struct):
   # ------------------------------------------------------------------------------
   def find_workout_items(self):
     workout_item_list = []
-    for row in self.raw['Workout']['workoutData']:
+    for row in self.raw['Workout']['WorkoutData']:
       w = WorkoutItem.create(raw=row, verbose=self.verbose)
       workout_item_list.append(w)
     self.workout_items = workout_item_list
@@ -73,7 +71,7 @@ class Workout(msgspec.Struct):
   # ------------------------------------------------------------------------------
   def find_intervals(self):
     interval_list = []
-    for row in self.raw['Workout']['intervalData']:
+    for row in self.raw['Workout']['IntervalData']:
       i = Interval.create(raw=row, verbose=self.verbose)
       if i.name != 'Workout':
         i.assign_workout_items(self.workout_items)

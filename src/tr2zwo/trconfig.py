@@ -1,5 +1,3 @@
-#!/usr/local/bin/python3
-
 import sys
 import keyring
 from getpass import getpass

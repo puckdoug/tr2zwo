@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import wx
 import wx.html2
 from tr2zwo import TRFetch, Workout, TRConfig

@@ -1,5 +1,3 @@
-#!/usr/local/bin/python3
-
 from typing import Dict
 import msgspec
 
@@ -17,7 +15,7 @@ class WorkoutItem(msgspec.Struct):
     instance = WorkoutItem()
     if 'raw' in kwargs:
       instance.raw = kwargs['raw']
-      instance.seconds = instance.raw['seconds']
-      instance.ftp = instance.raw['ftpPercent']
-      instance.member_ftp = instance.raw['memberFtpPercent']
+      instance.seconds = instance.raw['Seconds']
+      instance.ftp = instance.raw['FtpPercent']
+      instance.member_ftp = instance.raw['MemberFtpPercent']
     return instance

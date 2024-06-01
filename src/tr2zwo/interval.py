@@ -1,5 +1,3 @@
-#!/usr/local/bin/python3
-
 import msgspec
 from typing import List, Dict
 from tr2zwo.workoutitem import WorkoutItem
