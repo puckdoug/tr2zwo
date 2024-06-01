@@ -63,7 +63,7 @@ def task_format():
 def task_cleanup():
   """clean up build artifacts"""
   return {
-    'actions': [ 'rm -rf build tr2zwift.spec dist src/tr2zwo.egg-info' ]
+    'actions': [ 'rm -rf build tr2zwift.spec dist src/tr2zwo.egg-info src/tr2zwift src/tr2zwift-gui' ]
   }
 
 def task_watch():
