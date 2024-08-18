@@ -62,10 +62,10 @@ venv = ".venv"
 [tool.uv]
 dev-dependencies = [
   "pytest>=8.3.2",
-  "doit>=0.36.0",
   "ipdb>=0.13.13",
   "mypy>=1.11.1",
   "fixit>=2.1.0",
   "ruff>=0.6.1",
   "pyright>=1.1.376",
+  "watchdog>=4.0.2",
 ]
