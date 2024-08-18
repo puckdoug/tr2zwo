@@ -5,6 +5,9 @@ from getpass import getpass
 
 class TRConfig:
   verbose: bool = False
+  username: str = ''
+  password: str = ''
+  directory: str = ''
 
   def __init__(self):
     self.load()

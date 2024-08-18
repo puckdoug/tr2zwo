@@ -1,11 +1,11 @@
 import re
 import httpx
-import keyring
 from typing import List, Dict, Optional
 from argparse import ArgumentParser
 import sys
 import msgspec
-
+from bs4 import BeautifulSoup
+from tr2zwo import TRConfig
 
 # ===============================================================================
 class TRFetch(msgspec.Struct):
@@ -17,18 +17,29 @@ class TRFetch(msgspec.Struct):
 
   # -------------------------------------------------------------------------------
   def login(self, fh=sys.stdout):
+    c = TRConfig()
     url = 'https://www.trainerroad.com/app/login'
     self._client = httpx.Client(follow_redirects=True)
     if self.verbose:
       print('Logging in to TrainerRoad', file=fh)
-    username = keyring.get_password('trainerroad', 'username')
-    password = keyring.get_password('trainerroad', 'password')
-    data = {'Username': username, 'Password': password}
-    self._login = self._client.post(url, data=data)
+
+    login_page = self._client.get(url) # just fetch the page
+    soup = BeautifulSoup(login_page.text, 'lxml')
+
+    # set up the form data
+    data = {}
+    data['Username'] = c.username
+    data['Password'] = c.password
+    for hidden in soup.form.find_all('input', type='hidden'):
+      data[hidden['name']] = hidden['value']
+
+    # post the form
+    self._login = self._client.post(url, data=data, cookies=self._client.cookies)
+    print("foo")
 
   # -------------------------------------------------------------------------------
   def fixup_endpoint(self, endpoint):
-    id = re.search(r'workouts/(\d+)-', endpoint).group(1)
+    id = re.search(r'workouts/(\d+)-?', endpoint).group(1)
     return f'https://www.trainerroad.com/app/api/workoutdetails/{id}'
 
   # -------------------------------------------------------------------------------
