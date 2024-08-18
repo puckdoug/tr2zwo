@@ -20,6 +20,7 @@ class TRConfig:
     self.directory = keyring.get_password('tr2zwift', 'directory')
 
   def setup(self, username='', password='', directory=''):
+
     if username:
       self.username = username
     else:
@@ -30,13 +31,13 @@ class TRConfig:
       self.password = password
     else:
       self.password = getpass('TrainerRoad password: ')
-      keyring.set_password('tr2zwift', 'username', self.username)
+      keyring.set_password('tr2zwift', 'password', self.password)
 
     if directory:
       self.directory = directory
     else:
       self.directory = input('Output directory for .zwo files: ')
-      keyring.set_password('tr2zwift', 'username', self.username)
+      keyring.set_password('tr2zwift', 'directory', self.directory)
 
   def dump(self):
     print(f'username: {self.username}')
