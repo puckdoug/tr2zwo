@@ -35,7 +35,6 @@ class TRFetch(msgspec.Struct):
 
     # post the form
     self._login = self._client.post(url, data=data, cookies=self._client.cookies)
-    print("foo")
 
   # -------------------------------------------------------------------------------
   def fixup_endpoint(self, endpoint):
