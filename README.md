@@ -1,7 +1,14 @@
 # tr2zwo
 
-A python package to convert TrainerRoad workouts into Zwift ZWO format custom workout files. This allows TrainerRoad
-subscribers to easily follow their TrainerRoad plan in the Zwift world.
+A python package to convert TrainerRoad workouts into Zwift ZWO format custom
+workout files. This allows TrainerRoad subscribers to easily follow their
+TrainerRoad plan in the Zwift world.
+
+You must have your FTP in Zwift set to the same value in TrainerRoad for the
+workout to be accurate because the intervals are all set as a percentage of
+your ftp. Currently you can set this in the application from the home screen
+menu under "My Profile". The menu is under the image of your face (if you've
+set it) on the top right next the exit button.
 
 ## installation
 
@@ -10,6 +17,7 @@ $ python -m pip install tr2zwo
 ```
 
 ## Usage
+
 ```shell
 $ tr2zwift -h
 usage: tr2zwift [-h] [--verbose] {setup,fetch} ...
@@ -51,7 +59,7 @@ options:
   -h, --help   show this help message and exit
   --print, -p  Print the zwo to stdout, does not write file
 
-  ```
+```
 
 ## Example
 
@@ -59,4 +67,4 @@ options:
 
 ## References
 
-[ZWO Tag Reference]( https://github.com/h4l/zwift-workout-file-reference/blob/master/zwift_workout_file_tag_reference.md)
+[ZWO Tag Reference](https://github.com/h4l/zwift-workout-file-reference/blob/master/zwift_workout_file_tag_reference.md)

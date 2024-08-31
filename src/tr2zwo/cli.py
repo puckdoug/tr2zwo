@@ -57,16 +57,22 @@ def main():
       dire: Optional[str]
       try:
         user = args.username
+        if user is None:
+          user = ''
       except AttributeError:
-        user = None
+        user = ''
       try:
         pasw = args.password
+        if pasw is None:
+          pasw = ''
       except AttributeError:
-        pasw = None
+        pasw = ''
       try:
         dire = args.directory
+        if dire is None:
+          dire = ''
       except AttributeError:
-        dire = None
+        dire = ''
       c.setup(username=user, password=pasw, directory=dire)
     case 'fetch':
       f = TRFetch(verbose=c.verbose)

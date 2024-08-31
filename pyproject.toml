@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [project.scripts]
-tr2zwift = "tr2zwo.cli:main"
-tr2zwift-gui = "tr2zwo.gui:main"
+tr2zwo = "tr2zwo.cli:main"
+tr2zwo-gui = "tr2zwo.gui:main"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
