@@ -62,6 +62,7 @@ line-ending = "auto"
 venv = ".venv"
 
 [tool.uv]
+package = true
 dev-dependencies = [
   "pytest>=8.3.2",
   "ipdb>=0.13.13",
