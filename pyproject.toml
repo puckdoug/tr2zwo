@@ -74,4 +74,5 @@ dev-dependencies = [
   "setuptools>=72.2.0",
   "wheel>=0.44.0",
   "build>=1.2.1",
+  "pytest-cov>=5.0.0",
 ]
