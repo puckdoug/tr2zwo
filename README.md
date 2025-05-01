@@ -1,5 +1,13 @@
 # tr2zwo
 
+NOTE: Now that [TrainerRoad](https://www.trainerroad.com/) has released their
+own integration with Zwift, which works far better than this, it's unlikely 
+I will touch this code again. I'm leaving this up in case anyone finds the
+existing code useful - either for parsing TR workouts or generating Zwift ZWO
+files. Over time these might break, but for now they still do everything that
+I think it was possible to do without any special access (e.g. like TR has to 
+talk to Zwift directly). In short, have fun and use at your own risk. 
+
 A python package to convert TrainerRoad workouts into Zwift ZWO format custom
 workout files. This allows TrainerRoad subscribers to easily follow their
 TrainerRoad plan in the Zwift world.
